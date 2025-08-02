@@ -84,7 +84,7 @@ class EditRecordsMockService {
                     }
                 ],
             },
-            "RG-4000182596": {
+            "RG-6000182595": {
                 registration: this.mockRegistrations[1],
                 studentDetails: {
                     name: "Mr. Piyush Kumar",
@@ -113,7 +113,7 @@ class EditRecordsMockService {
                     pincode: "110053"
                 },
             },
-            "RG-6000182595": {
+            "RG-4000182596": {
                 registration: this.mockRegistrations[2],
                 societyDetails: {
                     amount: "100000",
@@ -234,6 +234,7 @@ class RedGiraffeDashboard {
         this.selectedRegistration = null;
         this.selectedRegistrationForUpload = null;
         this.ownerAccounts = [];
+        this.selectedFiles = []; // Track selected files for upload
 
         // Initialize Gift Cards data
         this.initializeGiftCardsData();
@@ -242,6 +243,11 @@ class RedGiraffeDashboard {
         this.initializeChartData();
 
         this.init();
+
+        // Run tests on initialization to verify the logic
+        setTimeout(() => {
+            this.testSettlementStatusLogic();
+        }, 1000);
     }
 
     initializeGiftCardsData() {
@@ -572,7 +578,7 @@ class RedGiraffeDashboard {
         // Initialize transfer points state
         this.transferPointsState = {
             step: "form", // form, confirmation, success
-            recipientType: "email", // email, phone, redgirraffe_id
+            recipientType: "existing", // existing, new
             recipientValue: "",
             amount: "",
             message: "",
@@ -661,6 +667,7 @@ class RedGiraffeDashboard {
                 amount: 14000,
                 date: new Date("2025-01-15"),
                 status: "UPCOMING",
+                isSettled: false, // No green tick - settlement pending
             },
             {
                 id: 9,
@@ -669,6 +676,7 @@ class RedGiraffeDashboard {
                 amount: 32000,
                 date: new Date("2025-01-10"),
                 status: "UPCOMING",
+                isSettled: false, // No green tick - settlement pending
             },
             // Scheduled payments
             {
@@ -678,6 +686,7 @@ class RedGiraffeDashboard {
                 amount: 10000,
                 date: new Date("2025-02-10"),
                 status: "SCHEDULED",
+                isSettled: false, // No green tick - settlement pending
             },
             {
                 id: 3,
@@ -686,6 +695,7 @@ class RedGiraffeDashboard {
                 amount: 18000,
                 date: new Date("2025-03-12"),
                 status: "SCHEDULED",
+                isSettled: false, // No green tick - settlement pending
             },
             {
                 id: 11,
@@ -694,6 +704,7 @@ class RedGiraffeDashboard {
                 amount: 45000,
                 date: new Date("2025-02-15"),
                 status: "SCHEDULED",
+                isSettled: false, // No green tick - settlement pending
             },
             {
                 id: 13,
@@ -702,6 +713,7 @@ class RedGiraffeDashboard {
                 amount: 22000,
                 date: new Date("2025-03-20"),
                 status: "SCHEDULED",
+                isSettled: false, // No green tick - settlement pending
             },
             // Completed payments
             {
@@ -711,6 +723,7 @@ class RedGiraffeDashboard {
                 amount: 14000,
                 date: new Date("2024-12-15"),
                 status: "PAID",
+                isSettled: true, // Green tick - settlement completed
             },
             {
                 id: 5,
@@ -719,6 +732,7 @@ class RedGiraffeDashboard {
                 amount: 14000,
                 date: new Date("2024-11-15"),
                 status: "PAID",
+                isSettled: false, // No green tick - settlement pending
             },
             {
                 id: 10,
@@ -727,6 +741,7 @@ class RedGiraffeDashboard {
                 amount: 32000,
                 date: new Date("2024-12-10"),
                 status: "PAID",
+                isSettled: true, // Green tick - settlement completed
             },
             {
                 id: 6,
@@ -735,6 +750,7 @@ class RedGiraffeDashboard {
                 amount: 10000,
                 date: new Date("2024-11-10"),
                 status: "PAID",
+                isSettled: true, // Green tick - settlement completed
             },
             {
                 id: 12,
@@ -743,6 +759,7 @@ class RedGiraffeDashboard {
                 amount: 45000,
                 date: new Date("2024-11-15"),
                 status: "PAID",
+                isSettled: false, // No green tick - settlement pending
             },
             {
                 id: 7,
@@ -751,6 +768,7 @@ class RedGiraffeDashboard {
                 amount: 18000,
                 date: new Date("2024-12-12"),
                 status: "PAID",
+                isSettled: true, // Green tick - settlement completed
             },
             {
                 id: 14,
@@ -759,6 +777,7 @@ class RedGiraffeDashboard {
                 amount: 22000,
                 date: new Date("2024-12-20"),
                 status: "PAID",
+                isSettled: false, // No green tick - settlement pending
             },
             // Failed payments
             {
@@ -768,6 +787,7 @@ class RedGiraffeDashboard {
                 amount: 10000,
                 date: new Date("2024-10-10"),
                 status: "FAILED",
+                isSettled: false, // No green tick - payment failed
             },
             // Additional transactions to match the React implementation
             {
@@ -777,6 +797,7 @@ class RedGiraffeDashboard {
                 amount: 14000,
                 date: new Date("2024-10-15"),
                 status: "PAID",
+                isSettled: true, // Green tick - settlement completed
             },
             {
                 id: 16,
@@ -785,6 +806,7 @@ class RedGiraffeDashboard {
                 amount: 10000,
                 date: new Date("2024-09-10"),
                 status: "PAID",
+                isSettled: false, // No green tick - settlement pending
             },
             {
                 id: 17,
@@ -793,6 +815,7 @@ class RedGiraffeDashboard {
                 amount: 18000,
                 date: new Date("2024-11-12"),
                 status: "PAID",
+                isSettled: true, // Green tick - settlement completed
             },
             {
                 id: 18,
@@ -801,6 +824,7 @@ class RedGiraffeDashboard {
                 amount: 32000,
                 date: new Date("2024-11-10"),
                 status: "PAID",
+                isSettled: false, // No green tick - settlement pending
             },
             {
                 id: 19,
@@ -809,6 +833,7 @@ class RedGiraffeDashboard {
                 amount: 45000,
                 date: new Date("2024-10-15"),
                 status: "PAID",
+                isSettled: true, // Green tick - settlement completed
             },
             {
                 id: 20,
@@ -817,6 +842,7 @@ class RedGiraffeDashboard {
                 amount: 22000,
                 date: new Date("2024-11-20"),
                 status: "PAID",
+                isSettled: false, // No green tick - settlement pending
             },
         ];
     }
@@ -1200,11 +1226,16 @@ class RedGiraffeDashboard {
             // Get transaction type icon and color
             const typeInfo = this.getTransactionTypeInfo(transaction.type);
 
-            // Get status badge styling
-            const statusInfo = this.getTransactionStatusInfo(transaction.status);
+            // Get status badge styling using settlement status logic
+            const statusInfo = this.getTransactionStatusInfo(transaction.status, transaction);
 
             // Format date
             const formattedDate = this.formatTransactionDate(transaction.date);
+
+            // Add green tick icon for settled transactions
+            const settlementIcon = transaction.isSettled ?
+                '<i class="fas fa-check-circle" style="color: #10b981; margin-left: 8px;" title="Settlement Completed"></i>' :
+                '';
 
             row.innerHTML = `
                 <td>
@@ -1225,6 +1256,7 @@ class RedGiraffeDashboard {
                     <span class="transaction-status-badge ${statusInfo.class}">
                         ${statusInfo.label}
                     </span>
+                    ${settlementIcon}
                 </td>
             `;
 
@@ -1246,8 +1278,113 @@ class RedGiraffeDashboard {
         }
     }
 
+    // Get settlement status based on transaction ID pattern and settlement indicator
+    getSettlementStatus(transaction) {
+        const { rgId, isSettled } = transaction;
+
+        // Extract transaction type from RG ID pattern
+        const rgIdMatch = rgId.match(/^RG-([046])/);
+        if (!rgIdMatch) {
+            return { class: "scheduled", label: "Unknown Status" };
+        }
+
+        const transactionTypeCode = rgIdMatch[1];
+
+        // Determine transaction type and status based on settlement indicator
+        switch (transactionTypeCode) {
+            case "0": // Rent transactions
+                return {
+                    class: isSettled ? "paid" : "pending",
+                    label: isSettled ? "Rent Payment Settled" : "Rent Settlement Pending"
+                };
+            case "4": // Maintenance transactions
+                return {
+                    class: isSettled ? "paid" : "pending",
+                    label: isSettled ? "Maintenance Payment Settled" : "Maintenance Settlement Pending"
+                };
+            case "6": // Fee transactions
+                return {
+                    class: isSettled ? "paid" : "pending",
+                    label: isSettled ? "Fee Payment Settled" : "Fee Settlement Pending"
+                };
+            default:
+                return { class: "scheduled", label: "Unknown Status" };
+        }
+    }
+
+    // Get payment status step text based on transaction ID pattern and settlement status
+    getPaymentStatusStepText(transactionId, isCompleted) {
+        // Extract transaction type from RG ID pattern
+        const rgIdMatch = transactionId.match(/^RG-([046])/);
+        if (!rgIdMatch) {
+            return isCompleted ? "Payment Settled" : "Settlement Pending";
+        }
+
+        const transactionTypeCode = rgIdMatch[1];
+
+        // Determine step text based on transaction type and completion status
+        switch (transactionTypeCode) {
+            case "0": // Rent transactions
+                return isCompleted ? "Rent Payment Settled" : "Rent Settlement Pending";
+            case "4": // Maintenance transactions
+                return isCompleted ? "Maintenance Payment Settled" : "Maintenance Settlement Pending";
+            case "6": // Fee transactions
+                return isCompleted ? "Fee Payment Settled" : "Fee Settlement Pending";
+            default:
+                return isCompleted ? "Payment Settled" : "Settlement Pending";
+        }
+    }
+
+    // Get charges section title based on transaction ID pattern
+    getChargesSectionTitle(transactionId) {
+        const rgIdMatch = transactionId.match(/^RG-([046])/);
+        if (!rgIdMatch) {
+            return "Charges";
+        }
+
+        const transactionTypeCode = rgIdMatch[1];
+
+        switch (transactionTypeCode) {
+            case "0": // Rent transactions
+                return "Rent Charges";
+            case "4": // Maintenance transactions
+                return "Maintenance Charges";
+            case "6": // Fee transactions
+                return "Fee Charges";
+            default:
+                return "Charges";
+        }
+    }
+
+    // Get transactions section title based on transaction ID pattern
+    getTransactionsSectionTitle(transactionId) {
+        const rgIdMatch = transactionId.match(/^RG-([046])/);
+        if (!rgIdMatch) {
+            return "Transactions";
+        }
+
+        const transactionTypeCode = rgIdMatch[1];
+
+        switch (transactionTypeCode) {
+            case "0": // Rent transactions
+                return "Rent Transactions";
+            case "4": // Maintenance transactions
+                return "Maintenance Transactions";
+            case "6": // Fee transactions
+                return "Education Fee Transactions";
+            default:
+                return "Transactions";
+        }
+    }
+
     // Get transaction status badge styling
-    getTransactionStatusInfo(status) {
+    getTransactionStatusInfo(status, transaction = null) {
+        // If transaction object is provided, use settlement status logic
+        if (transaction) {
+            return this.getSettlementStatus(transaction);
+        }
+
+        // Fallback to original status logic for backward compatibility
         switch (status) {
             case "PAID":
                 return { class: "paid", label: "COMPLETED" };
@@ -1266,6 +1403,75 @@ class RedGiraffeDashboard {
     formatTransactionDate(date) {
         const options = { day: "2-digit", month: "short", year: "numeric" };
         return new Date(date).toLocaleDateString("en-GB", options);
+    }
+
+    // Test function to verify settlement status logic
+    testSettlementStatusLogic() {
+        console.log("Testing Settlement Status Logic:");
+
+        // Test cases for different transaction types and settlement statuses
+        const testCases = [
+            { rgId: "RG-0000182568", isSettled: true, expected: "Rent Payment Settled" },
+            { rgId: "RG-0000182568", isSettled: false, expected: "Rent Settlement Pending" },
+            { rgId: "RG-4000180380", isSettled: true, expected: "Maintenance Payment Settled" },
+            { rgId: "RG-4000180380", isSettled: false, expected: "Maintenance Settlement Pending" },
+            { rgId: "RG-6000182595", isSettled: true, expected: "Fee Payment Settled" },
+            { rgId: "RG-6000182595", isSettled: false, expected: "Fee Settlement Pending" },
+        ];
+
+        testCases.forEach((testCase, index) => {
+            const result = this.getSettlementStatus(testCase);
+            const passed = result.label === testCase.expected;
+            console.log(`Test ${index + 1}: ${passed ? '✅ PASS' : '❌ FAIL'} - ${testCase.rgId} (settled: ${testCase.isSettled}) -> "${result.label}"`);
+        });
+
+        console.log("\nTesting Payment Status Step Text Logic:");
+
+        // Test cases for payment status step text
+        const stepTestCases = [
+            { transactionId: "RG-0000182568", isCompleted: true, expected: "Rent Payment Settled" },
+            { transactionId: "RG-0000182568", isCompleted: false, expected: "Rent Settlement Pending" },
+            { transactionId: "RG-4000180380", isCompleted: true, expected: "Maintenance Payment Settled" },
+            { transactionId: "RG-4000180380", isCompleted: false, expected: "Maintenance Settlement Pending" },
+            { transactionId: "RG-6000182595", isCompleted: true, expected: "Fee Payment Settled" },
+            { transactionId: "RG-6000182595", isCompleted: false, expected: "Fee Settlement Pending" },
+        ];
+
+        stepTestCases.forEach((testCase, index) => {
+            const result = this.getPaymentStatusStepText(testCase.transactionId, testCase.isCompleted);
+            const passed = result === testCase.expected;
+            console.log(`Step Test ${index + 1}: ${passed ? '✅ PASS' : '❌ FAIL'} - ${testCase.transactionId} (completed: ${testCase.isCompleted}) -> "${result}"`);
+        });
+
+        console.log("\nTesting Charges Section Title Logic:");
+
+        // Test cases for charges section titles
+        const chargesTestCases = [
+            { transactionId: "RG-0000182568", expected: "Rent Charges" },
+            { transactionId: "RG-4000180380", expected: "Maintenance Charges" },
+            { transactionId: "RG-6000182595", expected: "Fee Charges" },
+        ];
+
+        chargesTestCases.forEach((testCase, index) => {
+            const result = this.getChargesSectionTitle(testCase.transactionId);
+            const passed = result === testCase.expected;
+            console.log(`Charges Test ${index + 1}: ${passed ? '✅ PASS' : '❌ FAIL'} - ${testCase.transactionId} -> "${result}"`);
+        });
+
+        console.log("\nTesting Transactions Section Title Logic:");
+
+        // Test cases for transactions section titles
+        const transactionsTestCases = [
+            { transactionId: "RG-0000182568", expected: "Rent Transactions" },
+            { transactionId: "RG-4000180380", expected: "Maintenance Transactions" },
+            { transactionId: "RG-6000182595", expected: "Education Fee Transactions" },
+        ];
+
+        transactionsTestCases.forEach((testCase, index) => {
+            const result = this.getTransactionsSectionTitle(testCase.transactionId);
+            const passed = result === testCase.expected;
+            console.log(`Transactions Test ${index + 1}: ${passed ? '✅ PASS' : '❌ FAIL'} - ${testCase.transactionId} -> "${result}"`);
+        });
     }
 
     async loadEditRecords() {
@@ -2944,9 +3150,9 @@ class RedGiraffeDashboard {
             case "tenant":
                 return "Edit Rent Details";
             case "education":
-                return "Edit Education Details";
+                return "Edit Education Fee Registration ";
             case "society":
-                return "Edit Society Details";
+                return "Edit Maintenance Registration";
             default:
                 return "Edit Registration";
         }
@@ -3163,7 +3369,7 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
                 </div>
             </div>
 
-            <!-- Owner Account Details (Editable Fields) -->
+            <!-- Owner Account Details (Read-only) -->
             <div style="background: white; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; margin-bottom: 24px;">
                 <div style="background: #f9fafb; padding: 16px; border-bottom: 1px solid #e5e7eb;">
                     <h3 style="font-size: 16px; font-weight: 600; color: #b91c1c; margin: 0;">Owner Account Details</h3>
@@ -3646,69 +3852,62 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px;">
                     <!-- Account Holder Name -->
                     <div>
-                        <label style="display: block; color: #2563eb; font-size: 14px; font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-edit" style="font-size: 12px;"></i>
-                            Account Holder Name: *
+                        <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Account Holder Name
                         </label>
-                        <input type="text" name="accountHolderName_${account.id}" value="${account.accountHolderName || ''}"
-                               style="width: 100%; padding: 10px 12px; border: 1px solid #bfdbfe; border-radius: 6px; font-size: 14px; background: #dbeafe;"
-                               placeholder="Enter account holder name" required>
+                        <div style="padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; background: #f9fafb; color: #111827;">
+                            ${account.accountHolderName || 'N/A'}
+                        </div>
                     </div>
 
                     <!-- Account Number -->
                     <div>
-                        <label style="display: block; color: #2563eb; font-size: 14px; font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-edit" style="font-size: 12px;"></i>
-                            Account Number: *
+                        <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Account Number
                         </label>
-                        <input type="text" name="accountNumber_${account.id}" value="${account.accountNumber || ''}"
-                               style="width: 100%; padding: 10px 12px; border: 1px solid #bfdbfe; border-radius: 6px; font-size: 14px; background: #dbeafe;"
-                               placeholder="Enter account number" required>
+                        <div style="padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; background: #f9fafb; color: #111827;">
+                            ${account.accountNumber || 'N/A'}
+                        </div>
                     </div>
 
                     <!-- Account Type -->
                     <div>
-                        <label style="display: block; color: #2563eb; font-size: 14px; font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-edit" style="font-size: 12px;"></i>
-                            Account Type: *
+                        <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Account Type
                         </label>
-                        <select name="accountType_${account.id}" style="width: 100%; padding: 10px 12px; border: 1px solid #bfdbfe; border-radius: 6px; font-size: 14px; background: #dbeafe;" required>
-                            <option value="Savings" ${account.accountType === "Savings" ? "selected" : ""}>Savings</option>
-                            <option value="Current" ${account.accountType === "Current" ? "selected" : ""}>Current</option>
-                        </select>
+                        <div style="padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; background: #f9fafb; color: #111827;">
+                            ${account.accountType || 'N/A'}
+                        </div>
                     </div>
 
                     <!-- IFSC Code -->
                     <div>
-                        <label style="display: block; color: #2563eb; font-size: 14px; font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-edit" style="font-size: 12px;"></i>
-                            IFSC Code: *
+                        <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            IFSC Code
                         </label>
-                        <input type="text" name="ifscCode_${account.id}" value="${account.ifscCode || ''}"
-                               style="width: 100%; padding: 10px 12px; border: 1px solid #bfdbfe; border-radius: 6px; font-size: 14px; background: #dbeafe;"
-                               placeholder="Enter IFSC code" required>
+                        <div style="padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; background: #f9fafb; color: #111827;">
+                            ${account.ifscCode || 'N/A'}
+                        </div>
                     </div>
 
                     <!-- Bank Name -->
                     <div>
-                        <label style="display: block; color: #2563eb; font-size: 14px; font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-edit" style="font-size: 12px;"></i>
-                            Bank Name:
+                        <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            Bank Name
                         </label>
-                        <input type="text" name="bankName_${account.id}" value="${account.bankName || ''}"
-                               style="width: 100%; padding: 10px 12px; border: 1px solid #bfdbfe; border-radius: 6px; font-size: 14px; background: #dbeafe;"
-                               placeholder="Enter bank name">
+                        <div style="padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; background: #f9fafb; color: #111827;">
+                            ${account.bankName || 'N/A'}
+                        </div>
                     </div>
 
                     <!-- PAN Number -->
                     <div>
-                        <label style="display: block; color: #2563eb; font-size: 14px; font-weight: 500; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
-                            <i class="fas fa-edit" style="font-size: 12px;"></i>
-                            PAN Number:
+                        <label style="display: block; color: #6b7280; font-size: 12px; font-weight: 500; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;">
+                            PAN Number
                         </label>
-                        <input type="text" name="panNumber_${account.id}" value="${account.panNumber || ''}"
-                               style="width: 100%; padding: 10px 12px; border: 1px solid #bfdbfe; border-radius: 6px; font-size: 14px; background: #dbeafe;"
-                               placeholder="Enter PAN number">
+                        <div style="padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; background: #f9fafb; color: #111827;">
+                            ${account.panNumber || 'N/A'}
+                        </div>
                     </div>
                 </div>
             </div>
@@ -3828,6 +4027,7 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
         this.activeEditForm = null;
         this.selectedRegistration = null;
         this.selectedRegistrationForUpload = null;
+        this.selectedFiles = []; // Reset selected files
     }
 
     showUploadModalForRegistration(registrationId) {
@@ -3838,7 +4038,7 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
     showUploadModal() {
         const registrationText = this.selectedRegistrationForUpload ? ` for ${this.selectedRegistrationForUpload}` : '';
         const modalHtml = `
-            <div style="background: white; border-radius: 12px; max-width: 600px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
+            <div style="background: white; border-radius: 12px; max-width: 700px; width: 90%; max-height: 90vh; overflow-y: auto; position: relative;">
                 <div style="padding: 24px; border-bottom: 1px solid #e5e7eb;">
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <h2 style="font-size: 20px; font-weight: 600; color: #111827; margin: 0; font-family: 'Inter', sans-serif;">Upload Documents${registrationText}</h2>
@@ -3849,10 +4049,29 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
                     <form id="upload-form" onsubmit="dashboard.handleUploadDocuments(event)">
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; color: #374151; font-size: 14px; font-weight: 500; margin-bottom: 8px; font-family: 'Inter', sans-serif;">Select Documents</label>
-                            <input type="file" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
-                                   style="width: 100%; height: 200px; padding: 10px 12px; border: 2px dashed #d1d5db; border-radius: 6px; font-size: 14px; font-family: 'Inter', sans-serif;">
-                            <p style="color: #6b7280; font-size: 12px; margin-top: 4px; font-family: 'Inter', sans-serif;">Accepted formats: PDF, DOC, DOCX, JPG, JPEG, PNG (Max 10MB each)</p>
+                            <div style="position: relative;">
+                                <input type="file" id="file-input" multiple accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"
+                                       onchange="dashboard.handleFileSelection(event)"
+                                       style="position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; z-index: 2;">
+                                <div id="file-drop-zone" style="width: 100%; height: 120px; padding: 20px; border: 2px dashed #d1d5db; border-radius: 6px; font-size: 14px; font-family: 'Inter', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; background: #f9fafb; cursor: pointer; transition: all 0.2s;"
+                                     ondragover="dashboard.handleDragOver(event)" ondrop="dashboard.handleFileDrop(event)" ondragleave="dashboard.handleDragLeave(event)">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 24px; color: #6b7280; margin-bottom: 8px;"></i>
+                                    <p style="margin: 0; color: #6b7280; text-align: center;">
+                                        <span style="color: #2563eb; font-weight: 500;">Click to upload</span> or drag and drop files here
+                                    </p>
+                                    <p style="margin: 4px 0 0 0; color: #9ca3af; font-size: 12px;">PDF, DOC, DOCX, JPG, JPEG, PNG (Max 10MB each)</p>
+                                </div>
+                            </div>
                         </div>
+
+                        <!-- File Preview Section -->
+                        <div id="file-preview-section" style="margin-bottom: 20px; display: none;">
+                            <label style="display: block; color: #374151; font-size: 14px; font-weight: 500; margin-bottom: 8px; font-family: 'Inter', sans-serif;">Selected Files</label>
+                            <div id="file-preview-list" style="border: 1px solid #e5e7eb; border-radius: 6px; max-height: 200px; overflow-y: auto;">
+                                <!-- File previews will be inserted here -->
+                            </div>
+                        </div>
+
                         <div style="margin-bottom: 20px;">
                             <label style="display: block; color: #374151; font-size: 14px; font-weight: 500; margin-bottom: 8px; font-family: 'Inter', sans-serif;">Remarks</label>
                             <textarea name="remarks" rows="3" placeholder="Add any remarks about the documents..."
@@ -3865,7 +4084,7 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
                             </label>
                         </div>
                         <div style="display: flex; gap: 12px;">
-                            <button type="submit" style="flex: 1; background: #dc2626; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif;">
+                            <button type="submit" id="upload-submit-btn" disabled style="flex: 1; background: #9ca3af; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: not-allowed; font-family: 'Inter', sans-serif; transition: all 0.2s;">
                                 Upload Documents
                             </button>
                             <button type="button" onclick="dashboard.closeUploadModal()" style="flex: 1; background: #6b7280; color: white; padding: 12px; border: none; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif;">
@@ -3877,20 +4096,239 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
             </div>
         `;
         this.showEditModal(modalHtml);
+        this.selectedFiles = []; // Reset selected files
+        this.updateUploadButton();
     }
 
     handleUploadDocuments(event) {
         event.preventDefault();
         const formData = new FormData(event.target);
-        const files = event.target.querySelector('input[type="file"]').files;
         const remarks = formData.get("remarks");
+
+        if (this.selectedFiles.length === 0) {
+            this.showNotification("Please select at least one file to upload.", "error");
+            return;
+        }
 
         const registrationText = this.selectedRegistrationForUpload ? ` for ${this.selectedRegistrationForUpload}` : '';
         this.showNotification(
-            `Successfully uploaded ${files.length} document(s)${registrationText}.`,
+            `Successfully uploaded ${this.selectedFiles.length} document(s)${registrationText}.`,
             "success"
         );
         this.closeUploadModal();
+    }
+
+    // File handling functions for upload modal
+    handleFileSelection(event) {
+        const files = Array.from(event.target.files);
+        this.addFilesToSelection(files);
+    }
+
+    handleDragOver(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const dropZone = document.getElementById('file-drop-zone');
+        if (dropZone) {
+            dropZone.style.borderColor = '#2563eb';
+            dropZone.style.backgroundColor = '#eff6ff';
+        }
+    }
+
+    handleDragLeave(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const dropZone = document.getElementById('file-drop-zone');
+        if (dropZone) {
+            dropZone.style.borderColor = '#d1d5db';
+            dropZone.style.backgroundColor = '#f9fafb';
+        }
+    }
+
+    handleFileDrop(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        const dropZone = document.getElementById('file-drop-zone');
+        if (dropZone) {
+            dropZone.style.borderColor = '#d1d5db';
+            dropZone.style.backgroundColor = '#f9fafb';
+        }
+
+        const files = Array.from(event.dataTransfer.files);
+        this.addFilesToSelection(files);
+    }
+
+    addFilesToSelection(files) {
+        const validFiles = files.filter(file => {
+            // Check file type
+            const validTypes = ['.pdf', '.doc', '.docx', '.jpg', '.jpeg', '.png'];
+            const fileExtension = '.' + file.name.split('.').pop().toLowerCase();
+            if (!validTypes.includes(fileExtension)) {
+                this.showNotification(`File "${file.name}" has an invalid format. Please select PDF, DOC, DOCX, JPG, JPEG, or PNG files.`, "error");
+                return false;
+            }
+
+            // Check file size (10MB limit)
+            if (file.size > 10 * 1024 * 1024) {
+                this.showNotification(`File "${file.name}" is too large. Maximum size is 10MB.`, "error");
+                return false;
+            }
+
+            // Check if file already selected
+            if (this.selectedFiles.some(selectedFile => selectedFile.name === file.name && selectedFile.size === file.size)) {
+                this.showNotification(`File "${file.name}" is already selected.`, "warning");
+                return false;
+            }
+
+            return true;
+        });
+
+        // Add valid files to selection
+        this.selectedFiles.push(...validFiles);
+        this.updateFilePreview();
+        this.updateUploadButton();
+
+        if (validFiles.length > 0) {
+            this.showNotification(`Added ${validFiles.length} file(s) to upload queue.`, "success");
+        }
+    }
+
+    updateFilePreview() {
+        const previewSection = document.getElementById('file-preview-section');
+        const previewList = document.getElementById('file-preview-list');
+
+        if (!previewSection || !previewList) return;
+
+        if (this.selectedFiles.length === 0) {
+            previewSection.style.display = 'none';
+            return;
+        }
+
+        previewSection.style.display = 'block';
+        previewList.innerHTML = '';
+
+        this.selectedFiles.forEach((file, index) => {
+            const fileItem = document.createElement('div');
+            fileItem.style.cssText = `
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 12px 16px;
+                border-bottom: 1px solid #f3f4f6;
+                font-family: 'Inter', sans-serif;
+                transition: background-color 0.2s;
+            `;
+
+            fileItem.onmouseover = () => fileItem.style.backgroundColor = '#f9fafb';
+            fileItem.onmouseout = () => fileItem.style.backgroundColor = 'transparent';
+
+            const fileInfo = document.createElement('div');
+            fileInfo.style.cssText = 'display: flex; align-items: center; gap: 12px; flex: 1;';
+
+            // File icon based on type
+            const fileIcon = this.getFileIcon(file.name);
+            const iconElement = document.createElement('div');
+            iconElement.innerHTML = `<i class="${fileIcon.class}" style="color: ${fileIcon.color}; font-size: 20px;"></i>`;
+
+            // File details
+            const fileDetails = document.createElement('div');
+            fileDetails.style.cssText = 'flex: 1;';
+
+            const fileName = document.createElement('div');
+            fileName.textContent = file.name;
+            fileName.style.cssText = 'font-weight: 500; color: #111827; font-size: 14px; margin-bottom: 2px;';
+
+            const fileSize = document.createElement('div');
+            fileSize.textContent = this.formatFileSize(file.size);
+            fileSize.style.cssText = 'color: #6b7280; font-size: 12px;';
+
+            fileDetails.appendChild(fileName);
+            fileDetails.appendChild(fileSize);
+
+            // Remove button
+            const removeButton = document.createElement('button');
+            removeButton.innerHTML = '<i class="fas fa-times"></i>';
+            removeButton.style.cssText = `
+                background: #fee2e2;
+                color: #dc2626;
+                border: none;
+                border-radius: 4px;
+                width: 28px;
+                height: 28px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.2s;
+            `;
+
+            removeButton.onmouseover = () => {
+                removeButton.style.backgroundColor = '#fecaca';
+                removeButton.style.color = '#b91c1c';
+            };
+            removeButton.onmouseout = () => {
+                removeButton.style.backgroundColor = '#fee2e2';
+                removeButton.style.color = '#dc2626';
+            };
+
+            removeButton.onclick = () => this.removeFile(index);
+            removeButton.title = 'Remove file';
+
+            fileInfo.appendChild(iconElement);
+            fileInfo.appendChild(fileDetails);
+            fileItem.appendChild(fileInfo);
+            fileItem.appendChild(removeButton);
+            previewList.appendChild(fileItem);
+        });
+    }
+
+    getFileIcon(fileName) {
+        const extension = fileName.split('.').pop().toLowerCase();
+
+        switch (extension) {
+            case 'pdf':
+                return { class: 'fas fa-file-pdf', color: '#dc2626' };
+            case 'doc':
+            case 'docx':
+                return { class: 'fas fa-file-word', color: '#2563eb' };
+            case 'jpg':
+            case 'jpeg':
+            case 'png':
+                return { class: 'fas fa-file-image', color: '#059669' };
+            default:
+                return { class: 'fas fa-file', color: '#6b7280' };
+        }
+    }
+
+    formatFileSize(bytes) {
+        if (bytes === 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    }
+
+    removeFile(index) {
+        this.selectedFiles.splice(index, 1);
+        this.updateFilePreview();
+        this.updateUploadButton();
+        this.showNotification("File removed from upload queue.", "info");
+    }
+
+    updateUploadButton() {
+        const uploadButton = document.getElementById('upload-submit-btn');
+        if (!uploadButton) return;
+
+        if (this.selectedFiles.length > 0) {
+            uploadButton.disabled = false;
+            uploadButton.style.background = '#dc2626';
+            uploadButton.style.cursor = 'pointer';
+            uploadButton.textContent = `Upload ${this.selectedFiles.length} Document${this.selectedFiles.length > 1 ? 's' : ''}`;
+        } else {
+            uploadButton.disabled = true;
+            uploadButton.style.background = '#9ca3af';
+            uploadButton.style.cursor = 'not-allowed';
+            uploadButton.textContent = 'Upload Documents';
+        }
     }
 
     showAuditLog() {
@@ -5590,7 +6028,7 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
         // Reset transfer state
         this.transferPointsState = {
             step: "form",
-            recipientType: "email",
+            recipientType: "existing",
             recipientValue: "",
             amount: "",
             message: "",
@@ -5725,143 +6163,128 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
 
         // Form step
         return `
-            <div style="background: white; border-radius: 12px; max-width: 600px; width: 90vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);">
-                <div style="padding: 24px; background: white; border-radius: 12px;">
-                    <h2 style="font-size: 20px; font-weight: 700; color: #111827; margin: 0 0 24px 0;">Transfer Cash Points</h2>
+            <div style="background: white; border-radius: 12px; max-width: 500px; width: 90vw; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1); position: relative;">
+                <!-- Close Button -->
+                <button onclick="dashboard.closeModal()" style="position: absolute; top: 16px; right: 16px; background: none; border: none; font-size: 20px; color: #6b7280; cursor: pointer; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#f3f4f6'" onmouseout="this.style.backgroundColor='transparent'">
+                    ×
+                </button>
 
-                <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 6px; padding: 12px; margin-bottom: 24px;">
-                    <p style="color: #92400e; margin: 0; font-size: 14px;">
-                        <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
-                        The recipient will receive an email and SMS notification about this transfer.
-                    </p>
-                </div>
+                <div style="padding: 32px; background: white; border-radius: 12px;">
+                    <h2 style="font-size: 20px; font-weight: 600; color: #111827; margin: 0 0 24px 0; text-align: center; font-family: 'Inter', sans-serif;">Transfer Cash Points</h2>
 
-                <form onsubmit="dashboard.handleTransferForm(event)">
-                    <!-- Recipient Type -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px;">Recipient Type</label>
-                        <div style="display: flex; gap: 12px;">
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input
-                                    type="radio"
-                                    name="recipientType"
-                                    value="email"
-                                    ${recipientType === "email" ? "checked" : ""
-            }
-                                    onchange="dashboard.updateTransferPointsState({recipientType: this.value})"
-                                    style="margin: 0;"
-                                >
-                                <span style="color: #374151;">Email</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input
-                                    type="radio"
-                                    name="recipientType"
-                                    value="phone"
-                                    ${recipientType === "phone" ? "checked" : ""
-            }
-                                    onchange="dashboard.updateTransferPointsState({recipientType: this.value})"
-                                    style="margin: 0;"
-                                >
-                                <span style="color: #374151;">Phone</span>
-                            </label>
-                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
-                                <input
-                                    type="radio"
-                                    name="recipientType"
-                                    value="redgirraffe_id"
-                                    ${recipientType === "redgirraffe_id"
-                ? "checked"
-                : ""
-            }
-                                    onchange="dashboard.updateTransferPointsState({recipientType: this.value})"
-                                    style="margin: 0;"
-                                >
-                                <span style="color: #374151;">RedGirraffe ID</span>
-                            </label>
+                    <!-- Info Alert -->
+                    <div style="background: #fef3c7; border: 1px solid #f59e0b; border-radius: 8px; padding: 16px; margin-bottom: 24px;">
+                        <p style="color: #92400e; margin: 0; font-size: 14px; font-family: 'Inter', sans-serif;">
+                            The recipient will receive an email and SMS notification about this transfer.
+                        </p>
+                    </div>
+
+                    <form onsubmit="dashboard.handleTransferForm(event)">
+                        <!-- Recipient Type -->
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 12px; font-size: 14px; font-family: 'Inter', sans-serif;">Recipient Type</label>
+                            <div style="display: flex; gap: 24px;">
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-family: 'Inter', sans-serif;">
+                                    <input
+                                        type="radio"
+                                        name="recipientType"
+                                        value="existing"
+                                        ${recipientType === "existing" ? "checked" : ""}
+                                        onchange="dashboard.updateTransferPointsState({recipientType: this.value})"
+                                        style="margin: 0; width: 16px; height: 16px; accent-color: #2563eb;"
+                                    >
+                                    <span style="color: #374151; font-size: 14px;">Existing RedGirraffe User</span>
+                                </label>
+                                <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-family: 'Inter', sans-serif;">
+                                    <input
+                                        type="radio"
+                                        name="recipientType"
+                                        value="new"
+                                        ${recipientType === "new" ? "checked" : ""}
+                                        onchange="dashboard.updateTransferPointsState({recipientType: this.value})"
+                                        style="margin: 0; width: 16px; height: 16px; accent-color: #2563eb;"
+                                    >
+                                    <span style="color: #374151; font-size: 14px;">New User</span>
+                                </label>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Recipient Value -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px;">
-                            ${recipientType === "email"
-                ? "Email Address"
-                : recipientType === "phone"
-                    ? "Phone Number"
-                    : "RedGirraffe ID"
-            }
-                        </label>
-                        <input
-                            type="${recipientType === "email"
-                ? "email"
-                : recipientType === "phone"
-                    ? "tel"
-                    : "text"
-            }"
-                            value="${recipientValue}"
-                            onchange="dashboard.updateTransferPointsState({recipientValue: this.value})"
-                            placeholder="${recipientType === "email"
-                ? "Enter email address"
-                : recipientType === "phone"
-                    ? "Enter phone number"
-                    : "Enter RedGirraffe ID"
-            }"
-                            style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;"
-                            required
-                        >
-                    </div>
-
-                    <!-- Transfer Amount -->
-                    <div style="margin-bottom: 20px;">
-                        <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px;">Transfer Amount</label>
-                        <input
-                            type="number"
-                            value="${amount}"
-                            onchange="dashboard.updateTransferPointsState({amount: this.value})"
-                            placeholder="Enter number of points to transfer"
-                            min="${minTransfer}"
-                            max="${maxTransfer}"
-                            style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px;"
-                            required
-                        >
-                        <div style="display: flex; justify-content: space-between; margin-top: 4px; font-size: 12px; color: #6b7280;">
-                            <span>Available balance: ${currentBalance.toLocaleString()} Points</span>
-                            <span>Minimum transfer: ${minTransfer} Points</span>
+                        <!-- Transfer Amount -->
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px; font-size: 14px; font-family: 'Inter', sans-serif;">Transfer Amount</label>
+                            <input
+                                type="number"
+                                value="${amount}"
+                                onchange="dashboard.updateTransferPointsState({amount: this.value})"
+                                placeholder="Enter number of points to transfer"
+                                min="${minTransfer}"
+                                max="${maxTransfer}"
+                                style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; font-family: 'Inter', sans-serif;"
+                                required
+                            >
+                            <div style="display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: #6b7280; font-family: 'Inter', sans-serif;">
+                                <span>Available balance: ${currentBalance.toLocaleString()} Cash Points</span>
+                                <span>Minimum transfer: ${minTransfer} Points</span>
+                            </div>
                         </div>
-                        <div style="font-size: 12px; color: #6b7280; margin-top: 2px;">
-                            Maximum transfer: ${maxTransfer.toLocaleString()} Points
+
+                        <!-- Search User Section -->
+                        <div style="margin-bottom: 24px;">
+                            <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px; font-size: 14px; font-family: 'Inter', sans-serif;">Email or Mobile</label>
+                            <div style="display: flex; gap: 8px;">
+                                <input
+                                    type="text"
+                                    value="${recipientValue}"
+                                    onchange="dashboard.updateTransferPointsState({recipientValue: this.value})"
+                                    placeholder="Enter email address or mobile number"
+                                    style="flex: 1; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; font-family: 'Inter', sans-serif;"
+                                    required
+                                >
+                                <button
+                                    type="button"
+                                    onclick="dashboard.searchUser()"
+                                    style="background: #f87171; color: white; border: none; padding: 12px 20px; border-radius: 6px; font-size: 14px; font-weight: 500; cursor: pointer; font-family: 'Inter', sans-serif; transition: background-color 0.2s;"
+                                    onmouseover="this.style.backgroundColor='#ef4444'"
+                                    onmouseout="this.style.backgroundColor='#f87171'"
+                                >
+                                    Search
+                                </button>
+                            </div>
                         </div>
-                    </div>
 
-                    <!-- Message -->
-                    <div style="margin-bottom: 24px;">
-                        <label style="display: block; font-weight: 600; color: #374151; margin-bottom: 8px;">Message (Optional)</label>
-                        <textarea
-                            value="${message}"
-                            onchange="dashboard.updateTransferPointsState({message: this.value})"
-                            placeholder="Add a personal message to the recipient"
-                            rows="3"
-                            style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; resize: vertical;"
-                        ></textarea>
-                    </div>
+                        <!-- Message -->
+                        <div style="margin-bottom: 32px;">
+                            <label style="display: block; font-weight: 500; color: #374151; margin-bottom: 8px; font-size: 14px; font-family: 'Inter', sans-serif;">Message (Optional)</label>
+                            <textarea
+                                value="${message}"
+                                onchange="dashboard.updateTransferPointsState({message: this.value})"
+                                placeholder="Add a personal message to the recipient"
+                                rows="4"
+                                style="width: 100%; padding: 12px; border: 1px solid #d1d5db; border-radius: 6px; font-size: 14px; resize: vertical; font-family: 'Inter', sans-serif;"
+                            ></textarea>
+                        </div>
 
-                    <div style="display: flex; gap: 12px; justify-content: flex-end;">
-                        <button
-                            type="button"
-                            onclick="dashboard.closeModal()"
-                            style="background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: 500;"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            style="background: #ef4444; color: white; border: none; padding: 10px 24px; border-radius: 6px; cursor: pointer; font-weight: 600;"
-                        >
-                            Continue
-                        </button>
-                    </div>
-                </form>
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 12px; justify-content: center;">
+                            <button
+                                type="button"
+                                onclick="dashboard.closeModal()"
+                                style="background: #f3f4f6; color: #374151; border: 1px solid #d1d5db; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 500; font-size: 14px; font-family: 'Inter', sans-serif; transition: background-color 0.2s;"
+                                onmouseover="this.style.backgroundColor='#e5e7eb'"
+                                onmouseout="this.style.backgroundColor='#f3f4f6'"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                type="submit"
+                                style="background: #ef4444; color: white; border: none; padding: 12px 24px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; font-family: 'Inter', sans-serif; transition: background-color 0.2s;"
+                                onmouseover="this.style.backgroundColor='#dc2626'"
+                                onmouseout="this.style.backgroundColor='#ef4444'"
+                            >
+                                Transfer Points
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         `;
@@ -5883,6 +6306,30 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
         if (modalBody) {
             modalBody.innerHTML = modalContent;
         }
+    }
+
+    searchUser() {
+        const { recipientValue } = this.transferPointsState;
+
+        if (!recipientValue.trim()) {
+            this.showNotification("Please enter an email address or mobile number", "error");
+            return;
+        }
+
+        // Simulate user search
+        this.showNotification("Searching for user...", "info");
+
+        setTimeout(() => {
+            // Mock search result - in real implementation, this would be an API call
+            const isEmail = recipientValue.includes('@');
+            const isMobile = /^\d{10}$/.test(recipientValue.replace(/\D/g, ''));
+
+            if (isEmail || isMobile) {
+                this.showNotification(`User found: ${recipientValue}`, "success");
+            } else {
+                this.showNotification("Please enter a valid email address or 10-digit mobile number", "error");
+            }
+        }, 1000);
     }
 
     handleTransferForm(event) {
@@ -7579,7 +8026,10 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
     }
 
     loadDashboardTransactionHistory() {
-        // Mock transaction data
+        // Mock transaction data with different transaction types to demonstrate dynamic settlement text
+        // RG-4XXXXXXXXX = Maintenance transactions
+        // RG-6XXXXXXXXX = Fee transactions
+        // RG-0XXXXXXXXX = Rent transactions
         const mockTransactions = [
             {
                 id: "RG-4000180380",
@@ -7760,7 +8210,7 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
                                     <div style="height: 36px; width: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-bottom: 8px; background: ${isCompleted ? '#10b981' : '#d1d5db'}; color: ${isCompleted ? 'white' : '#6b7280'}; font-weight: 600; font-size: 14px; ${isCompleted ? 'box-shadow: 0 2px 4px rgba(16, 185, 129, 0.3);' : ''}">
                                         ${isCompleted ? '<i class="fas fa-check" style="font-size: 14px;"></i>' : '<i class="fas fa-clock" style="font-size: 14px;"></i>'}
                                     </div>
-                                    <span style="font-size: 12px; text-align: center; color: #374151; font-weight: 500; font-family: 'Inter', sans-serif;">Rent Settled</span>
+                                    <span style="font-size: 12px; text-align: center; color: #374151; font-weight: 500; font-family: 'Inter', sans-serif;">${this.getPaymentStatusStepText(transaction.id, isCompleted)}</span>
                                 </div>
                             </div>
                             <!-- Progress Line -->
@@ -7808,13 +8258,13 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
                             <i class="fas fa-calculator" style="color: #ef4444; font-size: 16px;"></i>
                             <h4 style="font-weight: 600; font-size: 16px; color: #ef4444; margin: 0; font-family: 'Inter', sans-serif;">
-                                Charges
+                                ${this.getChargesSectionTitle(transaction.id)}
                             </h4>
                         </div>
 
-                        <!-- Rent Charges Section -->
+                        <!-- Dynamic Charges Section -->
                         <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px; margin-bottom: 12px;">
-                            <h5 style="font-weight: 600; font-size: 14px; color: #475569; margin: 0 0 12px 0; font-family: 'Inter', sans-serif;">Rent Charges</h5>
+                            <h5 style="font-weight: 600; font-size: 14px; color: #475569; margin: 0 0 12px 0; font-family: 'Inter', sans-serif;">${this.getChargesSectionTitle(transaction.id)}</h5>
                             <div style="display: grid; gap: 8px; align-items: center;">
                                 <div style="display: flex; align-items: center; padding: 8px 0; border-bottom: 1px solid #e2e8f0;">
                                     <span style="font-size: 14px; color: #64748b; font-family: 'Inter', sans-serif;">Rent Amount :</span>
@@ -7828,12 +8278,12 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
                         </div>
                     </div>
 
-                    <!-- Section 4: Rent Transaction -->
+                    <!-- Section 4: Dynamic Transaction -->
                     <div style="padding: 20px; background: white;">
                         <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 16px;">
                             <i class="fas fa-home" style="color: #ef4444; font-size: 16px;"></i>
                             <h4 style="font-weight: 600; font-size: 16px; color: #ef4444; margin: 0; font-family: 'Inter', sans-serif;">
-                                Rent Transactions
+                                ${this.getTransactionsSectionTitle(transaction.id)}
                             </h4>
                         </div>
 
@@ -7850,8 +8300,8 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
                             <div style="padding: 16px; background: white;">
                                 <div style="display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 16px; align-items: center; font-size: 14px; font-family: 'Inter', sans-serif;">
                                     <span style="font-weight: 500; color: #1e293b;">Mukul Dani</span>
-                                    <span style="color: #64748b; font-family: 'Monaco', monospace;">006301529829</span>
-                                    <span style="color: #64748b; font-family: 'Monaco', monospace;">ICIC0000063</span>
+                                    <span style="color: #64748b;">006301529829</span>
+                                    <span style="color: #64748b;">ICIC0000063</span>
                                     <span style="font-weight: 600; color: #059669;">₹${(parseFloat(transaction.amount.replace(/[₹,]/g, '')) - 100).toLocaleString()}.00</span>
                                 </div>
                             </div>
@@ -7861,7 +8311,7 @@ I/We hereby undertake and indemnify RedGiraffe.com and the Bank from any claims,
                         <div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; font-size: 14px;">
                             <div style="padding: 12px; background: #f1f5f9; border-radius: 6px;">
                                 <p style="color: #64748b; margin: 0 0 4px 0; font-size: 12px; font-family: 'Inter', sans-serif;">Order ID</p>
-                                <p style="font-weight: 600; color: #1e293b; margin: 0; font-family: 'Monaco', monospace; font-size: 13px;">${transaction.id.replace('RG-', 'ORD-')}</p>
+                                <p style="font-weight: 600; color: #1e293b; margin: 0; font-size: 13px;">${transaction.id.replace('RG-', 'ORD-')}</p>
                             </div>
                             <div style="padding: 12px; background: #f1f5f9; border-radius: 6px;">
                                 <p style="color: #64748b; margin: 0 0 4px 0; font-size: 12px; font-family: 'Inter', sans-serif;">Due Date</p>
@@ -8677,7 +9127,11 @@ class RegistrationsManager {
                     studentGender: "Male",
                     studentDateOfBirth: "02/11/2001",
                     class: "Montessori 1",
-                    applicantRelationship: "Brother"
+                    applicantRelationship: "Brother",
+                    payerName: "Mr. John Doe",
+                    feeType: "Tuition Fee",
+                    name: "Student Registration",
+                    payerGSTIN: "07AAHCR5014K1ZB"
                 },
                 studentFeesDetails: {
                     feeAmount: "₹200.00",
@@ -8737,7 +9191,11 @@ class RegistrationsManager {
                     studentGender: "Female",
                     studentDateOfBirth: "22/08/1990",
                     class: "MBA 2nd Year",
-                    applicantRelationship: "Self"
+                    applicantRelationship: "Self",
+                    payerName: "Mrs. Priya Sharma",
+                    feeType: "MBA Fee",
+                    name: "MBA Program Registration",
+                    payerGSTIN: "29STUDE1234B1ZC"
                 },
                 studentFeesDetails: {
                     feeAmount: "₹50,000.00",
@@ -9453,12 +9911,28 @@ class RegistrationsManager {
             <tr style="background: #f8fafc; border-bottom: 1px solid #e5e7eb;">
                 <td colspan="6" style="padding: 0;">
                     <div class="expandable-details-container" style="padding: 24px; margin: 0;">
-                        <!-- Student Details Section -->
+                        <!-- Applicant Details Section -->
                         <div style="margin-bottom: 24px;">
                             <h4 class="expandable-section-header" style="color: #3b82f6; font-size: 16px; font-weight: 600; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid #3b82f6;">
-                                Student Details
+                                Applicant Details
                             </h4>
                             <div class="expandable-details-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; font-size: 14px;">
+                                <div class="expandable-detail-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                                    <span style="font-weight: 500; color: #374151;">Payer Name:</span>
+                                    <span style="color: #6b7280;">${studentDetails.payerName || 'N/A'}</span>
+                                </div>
+                                <div class="expandable-detail-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                                    <span style="font-weight: 500; color: #374151;">Fee Type:</span>
+                                    <span style="color: #6b7280;">${studentDetails.feeType || 'N/A'}</span>
+                                </div>
+                                <div class="expandable-detail-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                                    <span style="font-weight: 500; color: #374151;">Name:</span>
+                                    <span style="color: #6b7280;">${studentDetails.name || 'N/A'}</span>
+                                </div>
+                                <div class="expandable-detail-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                                    <span style="font-weight: 500; color: #374151;">Payer GSTIN:</span>
+                                    <span style="color: #6b7280;">${studentDetails.payerGSTIN || 'N/A'}</span>
+                                </div>
                                 <div class="expandable-detail-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
                                     <span style="font-weight: 500; color: #374151;">Gender:</span>
                                     <span style="color: #6b7280;">${studentDetails.gender}</span>
@@ -9507,6 +9981,7 @@ class RegistrationsManager {
                                     <span style="font-weight: 500; color: #374151;">Pincode:</span>
                                     <span style="color: #6b7280;">${studentDetails.pincode}</span>
                                 </div>
+                                
                             </div>
                         </div>
 
@@ -9566,10 +10041,6 @@ class RegistrationsManager {
                                     <span style="color: #6b7280;">${studentFeesDetails.currentSessionEndDate}</span>
                                 </div>
                                 <div class="expandable-detail-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
-                                    <span style="font-weight: 500; color: #374151;">GSTIN:</span>
-                                    <span style="color: #6b7280;">${studentFeesDetails.gstin || 'N/A'}</span>
-                                </div>
-                                <div class="expandable-detail-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
                                     <span style="font-weight: 500; color: #374151;">Card Issuing Bank:</span>
                                     <span style="color: #6b7280;">${studentFeesDetails.cardIssuingBank}</span>
                                 </div>
@@ -9618,6 +10089,7 @@ class RegistrationsManager {
                                     <span style="font-weight: 500; color: #374151;">City:</span>
                                     <span style="color: #6b7280;">${instituteDetails.city}</span>
                                 </div>
+                                
                             </div>
                         </div>
 
@@ -9646,6 +10118,10 @@ class RegistrationsManager {
                                 <div class="expandable-detail-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
                                     <span style="font-weight: 500; color: #374151;">IFSC:</span>
                                     <span style="color: #6b7280;">${instituteAccountDetails.ifsc}</span>
+                                </div>
+                                <div class="expandable-detail-row" style="display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb;">
+                                    <span style="font-weight: 500; color: #374151;">PAN No.:</span>
+                                    <span style="color: #6b7280;">${instituteDetails.panNo || 'N/A'}</span>
                                 </div>
                             </div>
                         </div>
